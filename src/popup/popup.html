@@ -1,0 +1,26 @@
+<!-- src/popup/popup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Screen Recorder</title>
+  <link rel="stylesheet" href="popup.css" />
+  <style>
+    html, body {
+      width: 400px;
+      height: 300px;
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h1>Screen Recorder</h1>
+  <button id="start">Start Recording</button>
+  <button id="stop" disabled>Stop Recording</button>
+  <p id="status">Idle</p>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
+
