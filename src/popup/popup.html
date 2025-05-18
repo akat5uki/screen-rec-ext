@@ -23,6 +23,14 @@
       <button id="start">▶ Start Recording</button>
       <button id="stop" disabled>⏹ Stop Recording</button>
     </div>
+<label for="quality">Video Quality:</label>
+<select id="quality">
+  <option value="1080">1080p</option>
+  <option value="720" selected>720p</option>
+  <option value="480">480p</option>
+  <option value="360">360p</option>
+</select>
+
     <p id="status">Idle</p>
   </div>
   <script type="module" src="popup.js"></script>
