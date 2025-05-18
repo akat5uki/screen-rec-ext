@@ -1,4 +1,3 @@
-<!-- src/popup/popup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,20 +6,25 @@
   <link rel="stylesheet" href="popup.css" />
   <style>
     html, body {
-      width: 400px;
-      height: 300px;
+      width: 320px;
+      height: 220px;
       margin: 0;
-      padding: 16px;
+      padding: 0;
       box-sizing: border-box;
+      background-color: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
     }
   </style>
 </head>
 <body>
-  <h1>Screen Recorder</h1>
-  <button id="start">Start Recording</button>
-  <button id="stop" disabled>Stop Recording</button>
-  <p id="status">Idle</p>
+  <div class="container">
+    <h2>🎥 Screen Recorder</h2>
+    <div class="buttons">
+      <button id="start">▶ Start Recording</button>
+      <button id="stop" disabled>⏹ Stop Recording</button>
+    </div>
+    <p id="status">Idle</p>
+  </div>
   <script type="module" src="popup.js"></script>
 </body>
 </html>
-
