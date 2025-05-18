@@ -1,7 +1,12 @@
 let mediaRecorder;
 let recordedChunks = [];
-let startTime;
+let processor;
+let generator;
+let videoTrack;
+let audioTrack;
+let processedStream;
 let timerInterval;
+let startTime;
 
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
@@ -11,32 +16,23 @@ const qualitySelector = document.getElementById("quality");
 startBtn.addEventListener("click", async () => {
   try {
     const selectedQuality = parseInt(qualitySelector.value);
-    const resolution = {
-      width: selectedQuality === 1080 ? 1920 :
-             selectedQuality === 720 ? 1280 :
-             selectedQuality === 480 ? 854 : 640,
-      height: selectedQuality === 1080 ? 1080 :
-              selectedQuality === 720 ? 720 :
-              selectedQuality === 480 ? 480 : 360
-    };
+    const width = selectedQuality === 1080 ? 1920 : selectedQuality === 720 ? 1280 : selectedQuality === 480 ? 854 : 640;
+    const height = selectedQuality === 1080 ? 1080 : selectedQuality === 720 ? 720 : selectedQuality === 480 ? 480 : 360;
 
-    // Get screen media
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: true
-    });
+    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
 
-    const originalVideoTrack = stream.getVideoTracks()[0];
+    videoTrack = stream.getVideoTracks()[0];
+    audioTrack = stream.getAudioTracks()[0] || null;
 
-    // Prepare canvas-based resizing
-    const processor = new MediaStreamTrackProcessor({ track: originalVideoTrack });
-    const generator = new MediaStreamTrackGenerator({ kind: 'video' });
+    // Set up resizing with OffscreenCanvas
+    processor = new MediaStreamTrackProcessor({ track: videoTrack });
+    generator = new MediaStreamTrackGenerator({ kind: 'video' });
 
     const transformer = new TransformStream({
       async transform(videoFrame, controller) {
-        const canvas = new OffscreenCanvas(resolution.width, resolution.height);
+        const canvas = new OffscreenCanvas(width, height);
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(videoFrame, 0, 0, resolution.width, resolution.height);
+        ctx.drawImage(videoFrame, 0, 0, width, height);
         const newFrame = new VideoFrame(canvas, { timestamp: videoFrame.timestamp });
         controller.enqueue(newFrame);
         videoFrame.close();
@@ -45,18 +41,15 @@ startBtn.addEventListener("click", async () => {
 
     processor.readable
       .pipeThrough(transformer)
-      .pipeTo(generator.writable);
+      .pipeTo(generator.writable)
+      .catch((err) => console.error("Pipeline error:", err));
 
-    // Create new stream with resized video and original audio
-    const processedStream = new MediaStream();
+    processedStream = new MediaStream();
     processedStream.addTrack(generator);
-    const audioTracks = stream.getAudioTracks();
-    if (audioTracks.length > 0) {
-      processedStream.addTrack(audioTracks[0]);
-    }
+    if (audioTrack) processedStream.addTrack(audioTrack);
 
-    mediaRecorder = new MediaRecorder(processedStream, { mimeType: "video/webm" });
     recordedChunks = [];
+    mediaRecorder = new MediaRecorder(processedStream, { mimeType: "video/webm" });
 
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) recordedChunks.push(e.data);
@@ -65,7 +58,6 @@ startBtn.addEventListener("click", async () => {
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = "recording.webm";
@@ -74,28 +66,27 @@ startBtn.addEventListener("click", async () => {
       a.remove();
       URL.revokeObjectURL(url);
 
-      stopTimer();
+      cleanup();
       statusText.textContent = "Recording saved.";
     };
 
     mediaRecorder.start();
     startTime = Date.now();
     startTimer();
-
     startBtn.disabled = true;
     stopBtn.disabled = false;
     statusText.textContent = "Recording...";
   } catch (err) {
     console.error("Error starting recording:", err);
     statusText.textContent = "Recording failed to start.";
+    cleanup();
   }
 });
 
 stopBtn.addEventListener("click", () => {
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
     mediaRecorder.stop();
     stopBtn.disabled = true;
-    startBtn.disabled = false;
     statusText.textContent = "Stopping...";
   }
 });
@@ -109,4 +100,33 @@ function startTimer() {
 
 function stopTimer() {
   clearInterval(timerInterval);
+}
+
+function cleanup() {
+  stopTimer();
+
+  // Stop all tracks
+  if (videoTrack) videoTrack.stop();
+  if (audioTrack) audioTrack.stop();
+  if (processedStream) processedStream.getTracks().forEach(t => t.stop());
+
+  // Abort processor/generator if needed
+  try {
+    if (processor?.readable) processor.readable.cancel();
+  } catch (e) {}
+  try {
+    if (generator?.writable) generator.writable.abort();
+  } catch (e) {}
+
+  // Reset variables
+  mediaRecorder = null;
+  recordedChunks = [];
+  processor = null;
+  generator = null;
+  videoTrack = null;
+  audioTrack = null;
+  processedStream = null;
+
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
 }
