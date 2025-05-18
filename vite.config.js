@@ -1,8 +1,8 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-  publicDir: 'public',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -11,9 +11,11 @@ export default defineConfig({
         popup: resolve(__dirname, 'src/popup/popup.html')
       },
       output: {
-        entryFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]'
       }
     }
-  }
+  },
+  publicDir: 'public' // Ensures manifest.json, background.js, etc. are copied
 });
