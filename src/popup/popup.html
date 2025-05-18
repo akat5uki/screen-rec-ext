@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <title>Screen Recorder</title>
-  <link rel="stylesheet" href="popup.css" />
-  <style>
-    html, body {
-      width: 320px;
-      height: 220px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      background-color: #f9f9f9;
-      font-family: 'Segoe UI', sans-serif;
-    }
-  </style>
+  <script type="module" crossorigin src="popup.js"></script>
+  <link rel="stylesheet" crossorigin href="popup.css">
 </head>
 <body>
   <div class="container">
     <h2>🎥 Screen Recorder</h2>
-    <div class="buttons">
-      <button id="start">▶ Start Recording</button>
-      <button id="stop" disabled>⏹ Stop Recording</button>
+
+    <div class="source-options">
+      <div class="option-button active" id="source-desktop">🖥 Desktop</div>
     </div>
-<label for="quality">Video Quality:</label>
-<select id="quality">
-  <option value="1080">1080p</option>
-  <option value="720" selected>720p</option>
-  <option value="480">480p</option>
-  <option value="360">360p</option>
-</select>
+
+    <div class="quality-options">
+      <div style="flex: 1">
+        <label for="quality">Video Quality</label>
+        <select id="quality">
+          <option value="1080">1080p</option>
+          <option value="720" selected>720p</option>
+          <option value="480">480p</option>
+          <option value="360">360p</option>
+        </select>
+      </div>
+      <div style="flex: 1">
+        <label for="format">Format</label>
+        <select id="format">
+          <option value="webm" selected>WebM</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="start">⏺ Start Recording</button>
+    <button id="stop" disabled>⏹ Stop Recording</button>
 
     <p id="status">Idle</p>
   </div>
-  <script type="module" src="popup.js"></script>
+
+
 </body>
 </html>

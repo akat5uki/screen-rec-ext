@@ -1,56 +1,159 @@
+/* popup.css - Modernized Styles Without External CDNs */
+
+:root {
+  --bg: #ffffff;
+  --text: #1f2937;
+  --primary: #2563eb;
+  --secondary: #f3f4f6;
+  --hover: #1d4ed8;
+  --danger: #dc2626;
+  --muted: #6b7280;
+  --border-radius: 12px;
+  --transition: 0.2s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  font-family: system-ui, sans-serif;
+  background-color: var(--secondary);
+  color: var(--text);
+  width: 100%;
+  height: 100%;
+}
+
 .container {
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: var(--bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 24px 16px;
+  max-width: 340px;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 16px;
 }
 
 h2 {
-  margin-bottom: 20px;
-  font-size: 18px;
-  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-button {
-  padding: 10px;
+.option-button, button {
+  padding: 12px;
+  border-radius: var(--border-radius);
   border: none;
-  border-radius: 8px;
-  width: 100%;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background var(--transition), transform var(--transition);
+  text-align: center;
+}
+
+.option-button {
+  background-color: var(--secondary);
+  border: 2px solid transparent;
+  color: var(--text);
+}
+
+.option-button:hover, .option-button.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
 button#start {
-  background-color: #4CAF50;
+  background-color: var(--primary);
   color: white;
 }
 
 button#start:hover {
-  background-color: #45a049;
+  background-color: var(--hover);
+  transform: scale(1.02);
 }
 
 button#stop {
-  background-color: #f44336;
+  background-color: var(--danger);
   color: white;
 }
 
 button#stop:hover {
-  background-color: #e53935;
+  background-color: #b91c1c;
+  transform: scale(1.02);
+}
+
+select, .toggle-switch input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: var(--border-radius);
+  background-color: white;
+  font-size: 14px;
+}
+
+label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
 }
 
 #status {
-  margin-top: 16px;
-  font-weight: bold;
-  color: #555;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.source-options, .settings-row, .quality-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.option-button {
+  flex: 1 1 45%;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: relative;
+  appearance: none;
+  width: 42px;
+  height: 22px;
+  background: #e5e7eb;
+  border-radius: 22px;
+  transition: background var(--transition);
+}
+
+.toggle-switch input[type="checkbox"]:checked {
+  background: var(--primary);
+}
+
+.toggle-switch input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--transition);
+}
+
+.toggle-switch input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
 }
