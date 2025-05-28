@@ -1,16 +1,20 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Screen Recorder",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Record screen with audio and save as .webm",
-  "action": {
+  "browser_action": {
     "default_icon": "icons/icon.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"],
+    "persistent": false
   },
   "permissions": ["windows"],
   "icons": {
-    "48": "icons/icon.png"
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }

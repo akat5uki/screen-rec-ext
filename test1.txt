@@ -1,2 +1,0 @@
-Checking Linux git setup.
-Making changes for git push test.

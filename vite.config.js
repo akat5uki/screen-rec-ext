@@ -8,7 +8,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, 'src/popup/popup.html')
+        popup: resolve(__dirname, 'popup.html')
       },
       output: {
         entryFileNames: '[name].js',
@@ -17,5 +17,5 @@ export default defineConfig({
       }
     }
   },
-  publicDir: 'public' // Ensures manifest.json, background.js, etc. are copied
+  publicDir: 'public'
 });
